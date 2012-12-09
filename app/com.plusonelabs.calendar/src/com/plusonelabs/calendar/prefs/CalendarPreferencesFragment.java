@@ -119,4 +119,10 @@ public class CalendarPreferencesFragment extends PreferenceFragment {
 		ContentResolver contentResolver = getActivity().getContentResolver();
 		return contentResolver.query(builder.build(), PROJECTION, null, null, null);
 	}
+
+	public static void deleteActiveCalendarsPref(SharedPreferences prefs, int appWidgetId) {
+		Editor editor = prefs.edit();
+		editor.remove(createActiveCalendarsPrefKey(appWidgetId));
+		editor.commit();
+	}
 }

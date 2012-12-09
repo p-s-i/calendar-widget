@@ -5,6 +5,7 @@ import static com.plusonelabs.calendar.prefs.ICalendarPreferences.*;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.joda.time.DateTime;
 
@@ -23,6 +24,7 @@ import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.RemoteViews;
 
+import com.plusonelabs.calendar.prefs.CalendarPreferencesFragment;
 import com.plusonelabs.calendar.prefs.ICalendarPreferences;
 
 public class EventAppWidgetProvider extends AppWidgetProvider {
@@ -150,6 +152,15 @@ public class EventAppWidgetProvider extends AppWidgetProvider {
 		intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
 		intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 		context.sendBroadcast(intent);
+	}
+	
+	@Override
+	public void onDeleted(Context context, int[] appWidgetIds) {
+		super.onDeleted(context, appWidgetIds);
+		for (int appWidgetId : appWidgetIds) {
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+			CalendarPreferencesFragment.deleteActiveCalendarsPref(prefs, appWidgetId);
+		}
 	}
 
 }
