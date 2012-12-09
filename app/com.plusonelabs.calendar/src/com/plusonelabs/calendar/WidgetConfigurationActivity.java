@@ -14,15 +14,14 @@ import android.widget.Button;
 
 public class WidgetConfigurationActivity extends PreferenceActivity {
 
+	static final String CONFIG_CALLED_FROM_ACTION_BAR_KEY = "com.plusonelabs.calendar.configCalledFromActionBar";
 	private int appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
 		appWidgetId=getAppWidgetIdFromIntent();
-		
-		if (hasHeaders() && appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+		if (hasHeaders() && showAddWidgetButton()) {
 			Button button = new Button(this);
 			button.setText(R.string.prefs_add_widget);
 			button.setOnClickListener(new OnClickListener() {
@@ -38,6 +37,15 @@ public class WidgetConfigurationActivity extends PreferenceActivity {
 			});
 			setListFooter(button);
 		}
+	}
+
+	private boolean showAddWidgetButton() {
+		Bundle extras = getIntent().getExtras();
+		int configCalledFromActionBar=0;
+		if (extras != null) {
+			configCalledFromActionBar = extras.getInt(CONFIG_CALLED_FROM_ACTION_BAR_KEY,0);
+		}
+		return appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID && configCalledFromActionBar==0;
 	}
 
 	private int getAppWidgetIdFromIntent() {

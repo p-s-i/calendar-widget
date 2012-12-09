@@ -5,7 +5,6 @@ import static com.plusonelabs.calendar.prefs.ICalendarPreferences.*;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import org.joda.time.DateTime;
 
@@ -65,6 +64,7 @@ public class EventAppWidgetProvider extends AppWidgetProvider {
 				formattedDate.toUpperCase(Locale.getDefault()));
 		Intent startConfigIntent = new Intent(context, WidgetConfigurationActivity.class);
 		startConfigIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+		startConfigIntent.putExtra(WidgetConfigurationActivity.CONFIG_CALLED_FROM_ACTION_BAR_KEY, 1);
 		Uri data = Uri.withAppendedPath(
 			    Uri.parse(URI_SCHEME + "://widget/id/")
 			    ,String.valueOf(appWidgetId));
