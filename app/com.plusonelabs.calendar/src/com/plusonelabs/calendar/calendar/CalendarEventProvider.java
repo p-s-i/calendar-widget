@@ -22,7 +22,7 @@ import android.provider.CalendarContract.Attendees;
 import android.provider.CalendarContract.Instances;
 import android.text.format.DateUtils;
 
-import com.plusonelabs.calendar.prefs.ICalendarPreferences;
+import com.plusonelabs.calendar.prefs.CalendarPreferencesFragment;
 
 public class CalendarEventProvider {
 
@@ -160,7 +160,8 @@ public class CalendarEventProvider {
 	private String createSelectionClause() {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		Set<String> activeCalenders = prefs.getStringSet(
-				ICalendarPreferences.PREF_ACTIVE_CALENDARS+appWidgetId, new HashSet<String>());
+				CalendarPreferencesFragment.createActiveCalendarsPrefKey(appWidgetId),
+				new HashSet<String>());
 		if (activeCalenders.isEmpty()) {
 			return EVENT_SELECTION;
 		}

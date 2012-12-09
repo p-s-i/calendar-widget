@@ -22,6 +22,7 @@ import android.provider.CalendarContract.Calendars;
 
 import com.plusonelabs.calendar.R;
 import com.plusonelabs.calendar.EventAppWidgetProvider;
+import com.plusonelabs.calendar.WidgetConfigurationActivity;
 
 public class CalendarPreferencesFragment extends PreferenceFragment {
 
@@ -34,24 +35,19 @@ public class CalendarPreferencesFragment extends PreferenceFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-	
-		Bundle arguments = getArguments();
-		if (arguments != null) {
-			appWidgetId = arguments.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
-					AppWidgetManager.INVALID_APPWIDGET_ID);
-			if(appWidgetId==AppWidgetManager.INVALID_APPWIDGET_ID){
-				throw new IllegalStateException("No valid appwidgetid.");
-			}
-		}
-		else{
-			throw new IllegalStateException("Noooo extras");
-		}
-		
+		appWidgetId=WidgetConfigurationActivity.getAppWidgetIdFromBundle(getArguments());
 		addPreferencesFromResource(R.xml.preferences_calendars);
 		SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
-		initialActiveCalendars = prefs.getStringSet(ICalendarPreferences.PREF_ACTIVE_CALENDARS+appWidgetId,
+		initialActiveCalendars = prefs.getStringSet(createActiveCalendarsPrefKey(appWidgetId),
 				null);
 		populatePreferenceScreen(initialActiveCalendars);
+	}
+	
+	public static String createActiveCalendarsPrefKey(int appWidgetId ) {
+		if(appWidgetId==AppWidgetManager.INVALID_APPWIDGET_ID){
+			return ICalendarPreferences.PREF_ACTIVE_CALENDARS;
+		}
+		return ICalendarPreferences.PREF_ACTIVE_CALENDARS+"_"+appWidgetId;
 	}
 
 	public void populatePreferenceScreen(Set<String> activeCalendars) {
@@ -90,7 +86,7 @@ public class CalendarPreferencesFragment extends PreferenceFragment {
 	public void persistSelectedCalendars(HashSet<String> prefValues) {
 		SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
 		Editor editor = prefs.edit();
-		editor.putStringSet(ICalendarPreferences.PREF_ACTIVE_CALENDARS+appWidgetId, prefValues);
+		editor.putStringSet(createActiveCalendarsPrefKey(appWidgetId), prefValues);
 		editor.commit();
 	}
 

@@ -19,11 +19,8 @@ public class WidgetConfigurationActivity extends PreferenceActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Bundle extras = getIntent().getExtras();
-		if (extras != null) {
-			appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
-					AppWidgetManager.INVALID_APPWIDGET_ID);
-		}
+		
+		appWidgetId=getAppWidgetIdFromIntent();
 		
 		if (hasHeaders() && appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
 			Button button = new Button(this);
@@ -43,6 +40,19 @@ public class WidgetConfigurationActivity extends PreferenceActivity {
 		}
 	}
 
+	private int getAppWidgetIdFromIntent() {
+		Bundle extras = getIntent().getExtras();
+		return getAppWidgetIdFromBundle(extras);
+	}
+
+	public static int getAppWidgetIdFromBundle(Bundle bundle) {
+		if (bundle != null) {
+			return bundle.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
+					AppWidgetManager.INVALID_APPWIDGET_ID);
+		}
+		return AppWidgetManager.INVALID_APPWIDGET_ID;
+	}
+
 	@Override
 	public void onBuildHeaders(List<Header> target) {
 		loadHeadersFromResource(R.xml.preferences_header, target);
@@ -51,14 +61,16 @@ public class WidgetConfigurationActivity extends PreferenceActivity {
 	@Override
 	public Intent onBuildStartFragmentIntent(String fragmentName, Bundle args,
 			int titleRes, int shortTitleRes) {
-		
-		if(args==null){
-			args = new Bundle();
-		}
-		args.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-
-		
+		args = addAppWidgetIdToBundle(args);
 		return super.onBuildStartFragmentIntent(fragmentName, args, titleRes,
 				shortTitleRes);
+	}
+
+	private Bundle addAppWidgetIdToBundle(Bundle bundle) {
+		if(bundle==null){
+			bundle = new Bundle();
+		}
+		bundle.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+		return bundle;
 	}
 }

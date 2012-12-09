@@ -28,7 +28,7 @@ import com.plusonelabs.calendar.prefs.ICalendarPreferences;
 public class EventAppWidgetProvider extends AppWidgetProvider {
 
 	private static final String METHOD_SET_BACKGROUND_RESOURCE = "setBackgroundResource";
-	private static final String URI_SCHEME = "WIDGET";
+	private static final String URI_SCHEME = "APPWIDGETID";
 
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
