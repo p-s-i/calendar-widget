@@ -28,6 +28,7 @@ import com.plusonelabs.calendar.prefs.ICalendarPreferences;
 public class EventAppWidgetProvider extends AppWidgetProvider {
 
 	private static final String METHOD_SET_BACKGROUND_RESOURCE = "setBackgroundResource";
+	private static final String URI_SCHEME = "WIDGET";
 
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -36,7 +37,7 @@ public class EventAppWidgetProvider extends AppWidgetProvider {
 			int widgetId = appWidgetIds[i];
 			RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget);
 			configureBackground(context, rv);
-			configureActionBar(context, rv);
+			configureActionBar(context, rv, widgetId);
 			configureList(context, widgetId, rv);
 			appWidgetManager.updateAppWidget(widgetId, rv);
 		}
@@ -55,12 +56,17 @@ public class EventAppWidgetProvider extends AppWidgetProvider {
 				transparencyToDrawableRes(bgTrans));
 	}
 
-	public void configureActionBar(Context context, RemoteViews rv) {
+	public void configureActionBar(Context context, RemoteViews rv, int appWidgetId) {
 		String formattedDate = DateUtils.formatDateTime(context, System.currentTimeMillis(),
 				DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_WEEKDAY);
 		rv.setTextViewText(R.id.calendar_current_date,
 				formattedDate.toUpperCase(Locale.getDefault()));
 		Intent startConfigIntent = new Intent(context, WidgetConfigurationActivity.class);
+		startConfigIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+		Uri data = Uri.withAppendedPath(
+			    Uri.parse(URI_SCHEME + "://widget/id/")
+			    ,String.valueOf(appWidgetId));
+		startConfigIntent.setData(data);
 		PendingIntent menuPendingIntent = PendingIntent.getActivity(context, 0, startConfigIntent,
 				PendingIntent.FLAG_UPDATE_CURRENT);
 		rv.setOnClickPendingIntent(R.id.overflow_menu, menuPendingIntent);

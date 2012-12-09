@@ -15,10 +15,10 @@ import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.RemoteViews;
 
+import com.plusonelabs.calendar.R;
 import com.plusonelabs.calendar.CalendarIntentUtil;
 import com.plusonelabs.calendar.DateUtil;
 import com.plusonelabs.calendar.IEventVisualizer;
-import com.plusonelabs.calendar.R;
 import com.plusonelabs.calendar.model.Event;
 
 public class CalendarEventVisualizer implements IEventVisualizer<CalendarEvent> {
@@ -35,9 +35,10 @@ public class CalendarEventVisualizer implements IEventVisualizer<CalendarEvent> 
 	private CalendarEventProvider calendarContentProvider;
 	private SharedPreferences prefs;
 
-	public CalendarEventVisualizer(Context context) {
+	public CalendarEventVisualizer(Context context, int appWidgetId) {
 		this.context = context;
-		calendarContentProvider = new CalendarEventProvider(context);
+		
+		calendarContentProvider = new CalendarEventProvider(context, appWidgetId);
 		prefs = PreferenceManager.getDefaultSharedPreferences(context);
 	}
 

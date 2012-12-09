@@ -3,6 +3,7 @@ package com.plusonelabs.calendar.prefs;
 import java.util.HashSet;
 import java.util.Set;
 
+import android.appwidget.AppWidgetManager;
 import android.content.ContentResolver;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -19,8 +20,8 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.provider.CalendarContract.Calendars;
 
-import com.plusonelabs.calendar.EventAppWidgetProvider;
 import com.plusonelabs.calendar.R;
+import com.plusonelabs.calendar.EventAppWidgetProvider;
 
 public class CalendarPreferencesFragment extends PreferenceFragment {
 
@@ -28,13 +29,27 @@ public class CalendarPreferencesFragment extends PreferenceFragment {
 	private static final String[] PROJECTION = new String[] { Calendars._ID,
 			Calendars.CALENDAR_DISPLAY_NAME, Calendars.CALENDAR_COLOR };
 	private Set<String> initialActiveCalendars;
+	private int appWidgetId=AppWidgetManager.INVALID_APPWIDGET_ID;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+	
+		Bundle arguments = getArguments();
+		if (arguments != null) {
+			appWidgetId = arguments.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
+					AppWidgetManager.INVALID_APPWIDGET_ID);
+			if(appWidgetId==AppWidgetManager.INVALID_APPWIDGET_ID){
+				throw new IllegalStateException("No valid appwidgetid.");
+			}
+		}
+		else{
+			throw new IllegalStateException("Noooo extras");
+		}
+		
 		addPreferencesFromResource(R.xml.preferences_calendars);
 		SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
-		initialActiveCalendars = prefs.getStringSet(ICalendarPreferences.PREF_ACTIVE_CALENDARS,
+		initialActiveCalendars = prefs.getStringSet(ICalendarPreferences.PREF_ACTIVE_CALENDARS+appWidgetId,
 				null);
 		populatePreferenceScreen(initialActiveCalendars);
 	}
@@ -75,7 +90,7 @@ public class CalendarPreferencesFragment extends PreferenceFragment {
 	public void persistSelectedCalendars(HashSet<String> prefValues) {
 		SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
 		Editor editor = prefs.edit();
-		editor.putStringSet(ICalendarPreferences.PREF_ACTIVE_CALENDARS, prefValues);
+		editor.putStringSet(ICalendarPreferences.PREF_ACTIVE_CALENDARS+appWidgetId, prefValues);
 		editor.commit();
 	}
 

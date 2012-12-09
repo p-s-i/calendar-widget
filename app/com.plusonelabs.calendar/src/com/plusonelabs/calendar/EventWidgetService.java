@@ -7,6 +7,6 @@ public class EventWidgetService extends RemoteViewsService {
 
 	@Override
 	public RemoteViewsFactory onGetViewFactory(Intent intent) {
-		return new EventRemoteViewsFactory(this.getApplicationContext());
+		return new EventRemoteViewsFactory(this.getApplicationContext(), intent);
 	}
 }

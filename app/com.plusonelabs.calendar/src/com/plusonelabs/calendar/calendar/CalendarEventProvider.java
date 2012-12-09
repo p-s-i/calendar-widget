@@ -38,9 +38,11 @@ public class CalendarEventProvider {
 	private static final String AND_BRACKET = " AND (";
 
 	private final Context context;
+	private final int appWidgetId;
 
-	public CalendarEventProvider(Context context) {
+	public CalendarEventProvider(Context context, int appWidgetId) {
 		this.context = context;
+		this.appWidgetId = appWidgetId;
 	}
 
 	public ArrayList<CalendarEvent> getEvents() {
@@ -145,7 +147,7 @@ public class CalendarEventProvider {
 
 	private Cursor createLoadedCursor() {
 		long start = System.currentTimeMillis();
-		long end = start + DateUtils.DAY_IN_MILLIS * 31;
+		long end = start + DateUtils.DAY_IN_MILLIS * 62;
 		Uri.Builder builder = Instances.CONTENT_URI.buildUpon();
 		ContentUris.appendId(builder, start);
 		ContentUris.appendId(builder, end);
@@ -158,7 +160,7 @@ public class CalendarEventProvider {
 	private String createSelectionClause() {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		Set<String> activeCalenders = prefs.getStringSet(
-				ICalendarPreferences.PREF_ACTIVE_CALENDARS, new HashSet<String>());
+				ICalendarPreferences.PREF_ACTIVE_CALENDARS+appWidgetId, new HashSet<String>());
 		if (activeCalenders.isEmpty()) {
 			return EVENT_SELECTION;
 		}

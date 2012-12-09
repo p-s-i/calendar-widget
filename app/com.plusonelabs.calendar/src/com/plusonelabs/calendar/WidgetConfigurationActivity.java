@@ -2,6 +2,8 @@ package com.plusonelabs.calendar;
 
 import java.util.List;
 
+import com.plusonelabs.calendar.R;
+
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,6 +24,7 @@ public class WidgetConfigurationActivity extends PreferenceActivity {
 			appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
 					AppWidgetManager.INVALID_APPWIDGET_ID);
 		}
+		
 		if (hasHeaders() && appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
 			Button button = new Button(this);
 			button.setText(R.string.prefs_add_widget);
@@ -43,5 +46,19 @@ public class WidgetConfigurationActivity extends PreferenceActivity {
 	@Override
 	public void onBuildHeaders(List<Header> target) {
 		loadHeadersFromResource(R.xml.preferences_header, target);
+	}
+	
+	@Override
+	public Intent onBuildStartFragmentIntent(String fragmentName, Bundle args,
+			int titleRes, int shortTitleRes) {
+		
+		if(args==null){
+			args = new Bundle();
+		}
+		args.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+
+		
+		return super.onBuildStartFragmentIntent(fragmentName, args, titleRes,
+				shortTitleRes);
 	}
 }

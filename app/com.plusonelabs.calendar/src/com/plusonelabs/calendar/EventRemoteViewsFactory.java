@@ -8,14 +8,17 @@ import java.util.Locale;
 
 import org.joda.time.DateTime;
 
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.format.DateUtils;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService.RemoteViewsFactory;
 
+import com.plusonelabs.calendar.R;
 import com.plusonelabs.calendar.calendar.CalendarEventVisualizer;
 import com.plusonelabs.calendar.model.DayHeader;
 import com.plusonelabs.calendar.model.Event;
@@ -31,10 +34,17 @@ public class EventRemoteViewsFactory implements RemoteViewsFactory {
 
 	private ArrayList<IEventVisualizer<?>> eventProviders;
 
-	public EventRemoteViewsFactory(Context context) {
+	public EventRemoteViewsFactory(Context context, Intent intent) {
 		this.context = context;
+		Bundle extras = intent.getExtras();
+		int appWidgetId=AppWidgetManager.INVALID_APPWIDGET_ID;
+		if (extras != null) {
+			appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID,
+					AppWidgetManager.INVALID_APPWIDGET_ID);
+		}
+		
 		eventProviders = new ArrayList<IEventVisualizer<?>>();
-		eventProviders.add(new CalendarEventVisualizer(context));
+		eventProviders.add(new CalendarEventVisualizer(context, appWidgetId));
 		eventEntries = new ArrayList<Event>();
 		prefs = PreferenceManager.getDefaultSharedPreferences(context);
 	}
